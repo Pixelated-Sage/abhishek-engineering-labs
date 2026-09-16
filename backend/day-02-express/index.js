@@ -3,7 +3,7 @@ import cors from 'cors'
 
 
 const app = express();
-let data = [
+const data = [
     {
         id:1,
         name:"Abhishek"
@@ -30,8 +30,8 @@ app.get("/users", (req,res)=>{
 app.post('/users', (req,res)=>{
     const Name = req.body.name;
     console.log(Name)
-    if(!Name && Name.trim()===""){
-        res.status(401).send("invalid input")
+    if(!Name || Name.trim()===""){
+        res.status(400).send("invalid input")
     }
     const newUser = {
         id: idcount++,
