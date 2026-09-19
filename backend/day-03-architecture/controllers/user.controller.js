@@ -3,8 +3,12 @@ import userService from "../services/user.service.js"
 
 
 const getUser = (req,res) => {
-    const userdata = userService.getUser()
-    res.status(200).json(userdata);
+    try{
+        const userdata = userService.getUser()
+        return res.status(200).json(userdata);
+    }catch (error){
+        next(error);
+    }
 }
 
 const postUser = (req,res,next) => {
@@ -12,17 +16,16 @@ const postUser = (req,res,next) => {
         const Name = req.body.name;
         console.log(Name)
         if(!Name|| Name.trim()===""){
-            res.status(400).json({message:"Kindly fill name"})
-        }else{
-            const result = userService.postUser(Name);
-            if(result.status){
-                res.status(201).json({message:"User Created Successfully",user:result.user})
-            }else {
-                res.status(500).json({message:"Unexpected Error"})
-            }
+            return res.status(400).json({message:"Kindly fill name"})
         }
-    }catch (error){
-        next(error)
+        const result = userService.postUser(Name);
+        if(result.status){
+            return res.status(201).json({message:"User Created Successfully",user:result.user})
+        }else  {
+            return next(new Error("User registeration failed in service"));
+        }
+    }catch (error) {
+        next(error);
     }
 }
 export default {getUser,postUser};

@@ -14,11 +14,11 @@ function logger (req,res,next){
 app.use(cors());
 app.use(express.json());
 app.use(logger);
-app.use(errorHandler)
 
 
 app.use("/api",userRouter);
 
+app.use(errorHandler)
 
 app.listen(3000,() => {
     console.log("Sever is running on http://localhost:3000")

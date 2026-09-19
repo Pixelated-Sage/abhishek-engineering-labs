@@ -107,18 +107,9 @@ POST /api/user
 {
   "name": "error"
 }
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Error</title>
-</head>
-
-<body>
-    <pre>Error: Invalid name provided<br> &nbsp; &nbsp;at Object.postUser (file:///home/abhishek/Documents/C02/abhishek-engineering-labs/backend/day-03-architecture/services/user.
-
-
+{
+    "message": "Internal Server Error"
+}
 Case 4
 
 http://localhost:3000/api/use
