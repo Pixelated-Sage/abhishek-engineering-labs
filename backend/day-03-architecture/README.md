@@ -1,4 +1,4 @@
-# Day 3 — Layered Backend Structure
+# Day 3 & 4 — Layered Backend Structure
 
 ## Architecture
 
@@ -36,3 +36,112 @@ instead of doing everything in server.js a single file handle everything we sape
 ## What I learned
 
 i learned to saperate the task into multiple file and form a proper easy to write and maintainable code 
+
+
+# Day 4 — Error Handling
+
+## Normal request pipeline
+
+Request
+↓
+Router
+↓
+Controller
+↓
+Service
+↓
+Response
+
+## Error pipeline
+
+Request
+↓
+Router
+↓
+Controller
+↓
+Service
+↓
+Error
+↓
+next(error)
+↓
+Error Handler
+↓
+Response
+
+## What I learned
+
+I learned proper error handling with next and built a middleware to handle the errors
+
+## Errors tested
+Case 1
+POST /api/user
+{
+  "name": "Abhishek"
+}
+
+{
+    "message": "User Created Successfully",
+    "user": {
+        "id": 1,
+        "name": "Abhiu"
+    }
+}
+
+
+Case 2
+POST /api/user
+{
+  "name": ""
+}
+
+{
+    "message": "Kindly fill name"
+}
+
+
+
+Case 3
+POST /api/user
+{
+  "name": "error"
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Error</title>
+</head>
+
+<body>
+    <pre>Error: Invalid name provided<br> &nbsp; &nbsp;at Object.postUser (file:///home/abhishek/Documents/C02/abhishek-engineering-labs/backend/day-03-architecture/services/user.
+
+
+Case 4
+
+http://localhost:3000/api/use
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Error</title>
+</head>
+
+<body>
+    <pre>Cannot POST /api/use</pre>
+</body>
+
+</html>
+
+
+## Why centralized error handling matters
+
+
+for proper error handling flow can be managed easily and proper user friendly api can be build so for user efficiency 
+
+

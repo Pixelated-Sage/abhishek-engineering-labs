@@ -8,6 +8,9 @@ const getUser = () =>{
 
 
 const postUser = (Name) =>{
+    if (Name === "error") {
+        throw new Error("Invalid name provided");
+    }
     try{
         const newUser = {
         id: dataIndex++,
@@ -16,7 +19,7 @@ const postUser = (Name) =>{
         data.push(newUser);
         return({status:1,user:newUser});
     } catch(error) {
-        throw new Error("Unexpected Error")
+        throw new Error("Error while adding user: " + error.message);
     }
 
 }

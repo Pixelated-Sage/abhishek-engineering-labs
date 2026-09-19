@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import userRouter from "./routes/user.route.js"
+import errorHandler from "./middleware/errorHandler.js";
 
 
 const app = express();
@@ -13,6 +14,7 @@ function logger (req,res,next){
 app.use(cors());
 app.use(express.json());
 app.use(logger);
+app.use(errorHandler)
 
 
 app.use("/api",userRouter);
