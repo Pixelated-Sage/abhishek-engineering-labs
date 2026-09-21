@@ -1,8 +1,13 @@
-const data = [
-    {
-        id:1,
-        name:"abhishek"
-    }
-]
+import { Pool } from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
-export default data;
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+})
+pool.on("connect", () => {
+    console.log("connected to the database");
+})
+
+
+export default pool;

@@ -1,6 +1,6 @@
 import express from "express"
 import cors from "cors"
-import userRouter from "./routes/user.route.js"
+import userRouter from "./routes/course.route.js"
 import errorHandler from "./middleware/errorHandler.js";
 
 
