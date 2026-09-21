@@ -1,10 +1,10 @@
-import pool from "../db/db.js";
+import repository from "../repositories/course.repository.js";
 
 
 
 const getCourses = async () =>{
-    const result = await pool.query("SELECT * FROM courses;");
-    return result;
+    const result = await repository.getCourses()
+    return result.rows;
 }
 
 
@@ -17,7 +17,7 @@ const postCourses = async (Id,Name) =>{
         id: Id,
         name : Name
     };
-    const result = await pool.query('INSERT into courses(id,name) VALUES($1,$2);',[newUser.id,newUser.name])
+    const result = await repository.createCourse(Id,Name)
     if (result.rowCount === 0) {
         throw new Error("Course Creation failed in service");
     }

@@ -6,7 +6,7 @@ const getCourses = async (req,res,next) => {
     try{
         const userdata = await userService.getCourses()
         console.log(userdata);
-        return res.status(200).json(userdata.rows);
+        return res.status(200).json(userdata);
     }catch (error){
         next(error);
     }
