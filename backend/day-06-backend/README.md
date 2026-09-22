@@ -33,6 +33,7 @@ Database access
 so service don't handle 2 task as per the rules one file handle only one task 
 and saperate the orm or psql queries can make it easy for any changes in db 
 we don't have to change large amount of services and queries we just have to change things in repository file
+and reusablility 
 
 ## What changed from Day 5
 
