@@ -1,17 +1,13 @@
--- Stop executing if any error happens (highly recommended!)
-\set ON_ERROR_STOP on
 
--- 1. Start the transaction block (Remove the "--"!)
-BEGIN;
+-- \set ON_ERROR_STOP on
 
--- 2. Create your checkpoint savepoint
-SAVEPOINT sp1;
+-- BEGIN;
 
--- 3. Run your delete command
-DELETE FROM students WHERE id = 'S00002';
+-- SAVEPOINT sp1;
 
--- 4. Rollback to the savepoint to undo the deletion!
-ROLLBACK TO SAVEPOINT sp1;
+-- DELETE FROM students WHERE id = 'S00002';
 
--- 5. Safely close the transaction sandbox
-COMMIT;
+-- ROLLBACK TO SAVEPOINT sp1;
+
+-- COMMIT;
+
