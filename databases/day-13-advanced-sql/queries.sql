@@ -45,3 +45,6 @@ coalesce(c.name,'No course')
 from students s
 left join enrollments e on s.id = e.student_id
 left join courses c on c.id = e.course_id;
+
+
+
