@@ -2,7 +2,7 @@
 
 ## what it is Serializable
 
-it is a very strict mvcc level or transaction, in this the transaction works in a serial one at a time ,
+it is a very strict mvcc level or transaction, in this the PostgreSQL SERIALIZABLE permits concurrent execution but ensures that successfully committed transactions behave as if they had executed in some serial order. If a dangerous dependency pattern is detected, PostgreSQL may abort a transaction, and the application must handle the serialization failure.,
 think of a transaction with serializable user 1 is actively working on db and 2 more transaction  user 2 , user 3 are there on same db and then if user 1 change something on table and and then any other transaction want to change on  table then the serializable blocks it the transaction have to stay back from those changes if the transaction want to work on the table it have to end and generate a latest snapshot or new transaction 
 
 its like 1 person changes push and all other have to update themself by force to avoid conflict 
