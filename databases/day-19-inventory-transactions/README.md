@@ -18,6 +18,26 @@ As we build it, we have an `inventory` table that looks like this:
 (6 rows)
 ```
 
+
+
+```
+                    Table "public.inventory"
+ Column |         Type          | Collation | Nullable | Default 
+--------+-----------------------+-----------+----------+---------
+ pid    | character varying(10) |           | not null | 
+ pname  | character varying(30) |           | not null | 
+ stock  | integer               |           | not null | 
+ price  | numeric(10,2)         |           | not null | 
+Indexes:
+    "inventory_pkey" PRIMARY KEY, btree (pid)
+Check constraints:
+    "inventory_price_check" CHECK (price >= 0::numeric)
+    "inventory_stock_check" CHECK (stock >= 0)
+Referenced by:
+    TABLE "transactions" CONSTRAINT "transactions_pid_fkey" FOREIGN KEY (pid) REFERENCES inventory(pid)
+```
+
+
 ## 2. Transaction Table
 
 I also made a transaction table, which looks like this:
@@ -27,6 +47,23 @@ I also made a transaction table, which looks like this:
 -----+-----+----------+----------------------------------
  T01 | P01 |        3 | 2026-10-20 03:33:12.508305+05:30
 ```
+```
+                      Table "public.transactions"
+   Column   |           Type           | Collation | Nullable | Default 
+------------+--------------------------+-----------+----------+---------
+ tid        | character varying(10)    |           | not null | 
+ pid        | character varying(10)    |           |          | 
+ quantity   | integer                  |           | not null | 
+ created_at | timestamp with time zone |           |          | now()
+Indexes:
+    "transactions_pkey" PRIMARY KEY, btree (tid)
+Check constraints:
+    "transactions_quantity_check" CHECK (quantity > 0)
+Foreign-key constraints:
+    "transactions_pid_fkey" FOREIGN KEY (pid) REFERENCES inventory(pid)
+
+```
+
 
 ### Internal Constraints
 
@@ -65,7 +102,7 @@ All this is going to happen inside a transaction of PSQL (`BEGIN`, `ROLLBACK`, `
 
 To execute this for the first time, I tried the `WITH` Common Table Expression (CTE) command.
 
-This is like saving some data in a variable, and the data we are fetching is via a query. So what we do is:
+This is a command to extract result for the sql statement So what we do is:
 
 - `WITH` creates a variable.
 - Then the query runs to change the stocks for a particular row, and the `WHERE` clause does the task.
@@ -272,6 +309,10 @@ returning tid, pid, quantity, created_at;
 (1 row)
 
 INSERT 0 1
+
+engineering_lab=*# commit;
+COMMIT
+
 ```
 
 ### Session 2
@@ -328,5 +369,37 @@ returning tid, pid, quantity, created_at;
 (0 rows)
 
 INSERT 0 0
+
+engineering_lab=*# commit;
+COMMIT
+
 ```
 
+
+
+### after all this 
+
+```
+
+engineering_lab=# select * from inventory;
+ pid | pname | stock | price  
+-----+-------+-------+--------
+ P02 | chai  |     7 |  30.32
+ P03 | haldi |    13 |  12.32
+ P04 | munch |    20 |   5.00
+ P05 | dahi  |    12 |  30.00
+ P06 | ataa  |     4 | 170.00
+ P01 | dudh  |     0 |  35.32
+(6 rows)
+
+engineering_lab=# select * from transactions ;
+ tid | pid | quantity |            created_at            
+-----+-----+----------+----------------------------------
+ T01 | P01 |        3 | 2026-10-20 03:33:12.508305+05:30
+ T06 | P01 |        3 | 2026-10-22 15:13:33.011456+05:30
+ T07 | P01 |        3 | 2026-10-22 15:17:28.514306+05:30
+ T08 | P01 |        1 | 2026-10-22 15:19:28.568673+05:30
+(4 rows)
+
+engineering_lab=# 
+```
