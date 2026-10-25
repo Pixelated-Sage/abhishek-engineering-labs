@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import {success, z} from 'zod';
+import {z} from 'zod';
 
 const app = express();
 let users = [
     {
         name:"abhishek",
-        email:"abhishekaj590@gmail.com"
+        email:"abhishekaj590@gmail.com",
+        role:"user"
     },
 ]
 function logger(req,res,next){
@@ -14,9 +15,14 @@ function logger(req,res,next){
     next();
 }
 const apiValidation = z.object({
-    name: z.string().min(5,"Name Format is invalid"),
-    email: z.string().email("Invalid email format"),
-    user: z.enum(['user','admin'])
+    name: z.string({
+        required_error:"Name is missing completely",
+        invalid_type_error:"Name must be a string value"
+    }).trim().min(5,"Name cannot be empty or just space"),
+    email: z.string({
+        required_error:"Email is missing completely"
+    }).email("Invalid email format structure"),
+    role: z.enum(['user','admin'])
 })
 
 app.use(cors());
@@ -27,24 +33,24 @@ app.use(logger);
 app.get("/health", (req,res) => {
     res.status(200).json({"message":"working"});
 })
-app.post("/users", (req,res)=> {
+app.post("/users", (req,res , next)=> {
 
     //API/DTO layer
     const result = apiValidation.safeParse(req.body);
     if(!result.success){
-        res.status(400).json({
+        return res.status(400).json({
             success:false,
             "Message":"Your input values are wrong",
-            "error":"Invalid Format"
+            "error":result.error.format()
         });
     }
-    let {name , email, role} = result;
+    let {name , email, role} = result.data;
     console.log(name, email);
     
 
     // controller / context layer
     if(role === "admin"){
-        res.status(403).json({
+        return res.status(403).json({
             success:false,
             error:"Unauthorized to create admin accounts"
         })
@@ -52,10 +58,21 @@ app.post("/users", (req,res)=> {
 
 
     // service layer 
+    if(users.find((user) => (user.name === name && user.email === email ))){
+        return res.status(422).json({
+            success:false,
+            message:"User already exist",
+            error:"user exists"
+        })
+    }
 
 
+    // DB layer (if in real db the constraints automatically works)
+    // const dbError = new Error("DB connection failed");
+    // return next(dbError); // this will be handled by the error handler middleware
+    users.push({name,email,role})
 
-    res.status(201).json({
+    return res.status(201).json({
         success:true,
         "message":"user Created successfully"
     });
@@ -71,10 +88,15 @@ app.use("/", (req,res,next) => {
 })
 
 app.use((err,req,res,next) => {
-    console.log("Internal Crash Logged",err.stack);
-    res.status(500).json({
+    // console.log("Internal Crash Logged",err.stack);
+
+    if(res.headersSent){
+        return next(err);
+    }
+    return res.status(500).json({
         success:false,
-        error:"Internal server error"
+        error:"Internal server error",
+        message:err.message
     })
 })
 
